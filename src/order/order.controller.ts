@@ -13,7 +13,6 @@ import { UpdateOrderDto } from './dto/updateOrderDto';
 import { ProductApiService } from './productApi.service';
 import { CreateOrderAggregateDto } from './dto/createOrderAggregateDto';
 import { OrderProducerService } from './orderProducer.service';
-import { UpdateOrderAggregateStatusDto } from './dto/UpdateOrderAggregateStatusDto';
 
 @Controller('orders')
 export class OrderController {
@@ -29,11 +28,11 @@ export class OrderController {
     const products = await this.productApiService.getProductsByIds(productIds);
 
     const lineItems = createOrderDto.lineItems.map((item) => {
-      const { name, manufacturer, country, unitPrice, id } = products.find(
+      const { name, manufacturer, country, unitPrice } = products.find(
         (p) => p.id === item.productId,
       );
       return {
-        id,
+        productId: item.productId,
         name,
         manufacturer,
         country,
@@ -79,13 +78,13 @@ export class OrderController {
   @Put('/status/:id')
   async updateStatus(
     @Param('id') id: string,
-    @Body() updateOrderStatusDto: UpdateOrderAggregateStatusDto,
+    @Body() updateOrderStatusDto: UpdateOrderDto,
   ) {
     await this.orderService.update(+id, updateOrderStatusDto);
-    await this.orderProducerService.addOrderUpdateToQueue(
-      +id,
-      updateOrderStatusDto,
-    );
+    await this.orderProducerService.addOrderUpdateToQueue({
+      orderId: +id,
+      status: updateOrderStatusDto.status,
+    });
   }
 
   @Delete(':id')

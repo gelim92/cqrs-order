@@ -26,20 +26,19 @@ export class OrderProducerService {
     });
   }
 
-  async addOrderToQueue(order: CreateOrderAggregateDto) {
-    Logger.log(`Sending Create Order Queue, Id: ${order.id}`);
+  async addOrderToQueue(createOrderAggregateDto: CreateOrderAggregateDto) {
+    Logger.log(`Sending Create Order Queue, Id: ${createOrderAggregateDto.id}`);
     const message: OrderQueueMessage = {
       operationType: 'CREATE',
-      payload: JSON.stringify(order),
+      payload: JSON.stringify(createOrderAggregateDto),
     };
     return this.addToQueue(message);
   }
 
   async addOrderUpdateToQueue(
-    orderId: number,
     updateOrderStatusDto: UpdateOrderAggregateStatusDto,
   ) {
-    Logger.log(`Sending Update Order Queue, Id: ${orderId}`);
+    Logger.log(`Sending Update Order Queue, Id: ${updateOrderStatusDto}`);
     const message: OrderQueueMessage = {
       operationType: 'UPDATE',
       payload: JSON.stringify(updateOrderStatusDto),

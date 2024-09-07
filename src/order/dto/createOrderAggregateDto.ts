@@ -1,5 +1,5 @@
 export class LineItemDto {
-  id: number;
+  productId: number;
   name: string;
   manufacturer: string;
   country: string;

@@ -4,7 +4,6 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
-import { EmailModule } from '../email/email.module';
 import { LineItemEntity } from './entities/lineItem.entity';
 import { ProductApiService } from './productApi.service';
 import { OrderProducerService } from './orderProducer.service';
@@ -24,7 +23,6 @@ import { OrderProducerService } from './orderProducer.service';
       logging: true,
     }),
     TypeOrmModule.forFeature([Order, LineItemEntity]),
-    EmailModule,
     HttpModule,
   ],
   providers: [OrderService, ProductApiService, OrderProducerService],
