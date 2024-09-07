@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { EmailModule } from '../email/email.module';
 import { LineItemEntity } from './entities/lineItem.entity';
+import { ProductApiService } from './productApi.service';
 
 @Module({
+  controllers: [OrderController],
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -21,8 +24,8 @@ import { LineItemEntity } from './entities/lineItem.entity';
     }),
     TypeOrmModule.forFeature([Order, LineItemEntity]),
     EmailModule,
+    HttpModule,
   ],
-  controllers: [OrderController],
-  providers: [OrderService],
+  providers: [OrderService, ProductApiService],
 })
 export class OrderModule {}

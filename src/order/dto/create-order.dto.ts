@@ -4,5 +4,6 @@ export class CreateLineItemDto {
 }
 
 export class CreateOrderDto {
+  status: string;
   lineItems: CreateLineItemDto[];
 }

@@ -7,6 +7,10 @@ GET http://localhost:3000/orders
 
 GET http://localhost:3000/orders/3
 
+### GET Products
+
+GET http://localhost:4000/products
+
 ### POST Orders
 
 POST http://localhost:3000/orders
@@ -16,12 +20,20 @@ Content-Type: application/json
   "status": "NEW",
   "lineItems": [
     {
-      "productId": 11,
-      "quantity": 999
+      "productId": 1,
+      "quantity": 5
     },
     {
-      "productId": 5,
-      "quantity": 444
+      "productId": 3,
+      "quantity": 4
+    },
+    {
+      "productId": 4,
+      "quantity": 3
+    },
+    {
+      "productId": 2,
+      "quantity": 2
     }
   ]
 }
