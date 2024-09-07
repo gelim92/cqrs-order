@@ -13,7 +13,7 @@ POST http://localhost:3000/orders
 Content-Type: application/json
 
 {
-  "status": "PENDING",
+  "status": "NEW",
   "lineItems": [
     {
       "productId": 11,
