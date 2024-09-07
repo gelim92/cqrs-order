@@ -7,6 +7,7 @@ import { Order } from './entities/order.entity';
 import { EmailModule } from '../email/email.module';
 import { LineItemEntity } from './entities/lineItem.entity';
 import { ProductApiService } from './productApi.service';
+import { OrderProducerService } from './orderProducer.service';
 
 @Module({
   controllers: [OrderController],
@@ -26,6 +27,6 @@ import { ProductApiService } from './productApi.service';
     EmailModule,
     HttpModule,
   ],
-  providers: [OrderService, ProductApiService],
+  providers: [OrderService, ProductApiService, OrderProducerService],
 })
 export class OrderModule {}

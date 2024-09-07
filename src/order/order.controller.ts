@@ -8,15 +8,19 @@ import {
   Put,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { CreateOrderDto } from './dto/createOrderDto';
+import { UpdateOrderDto } from './dto/updateOrderDto';
 import { ProductApiService } from './productApi.service';
+import { CreateOrderAggregateDto } from './dto/createOrderAggregateDto';
+import { OrderProducerService } from './orderProducer.service';
+import { UpdateOrderAggregateStatusDto } from './dto/UpdateOrderAggregateStatusDto';
 
 @Controller('orders')
 export class OrderController {
   constructor(
     private readonly orderService: OrderService,
     private readonly productApiService: ProductApiService,
+    private readonly orderProducerService: OrderProducerService,
   ) {}
 
   @Post()
@@ -41,7 +45,7 @@ export class OrderController {
     const netTotal = lineItems.reduce((acc, item) => acc + item.total, 0);
     const createdOrder = await this.orderService.create(createOrderDto);
 
-    const orderAggregate = {
+    const orderAggregate: CreateOrderAggregateDto = {
       id: createdOrder.id,
       lineItems,
       netTotal,
@@ -49,6 +53,8 @@ export class OrderController {
       createdOn: createdOrder.createdOn,
       modifiedOn: createdOrder.modifiedOn,
     };
+
+    await this.orderProducerService.addOrderToQueue(orderAggregate);
     return orderAggregate;
   }
 
@@ -63,8 +69,23 @@ export class OrderController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ) {
+    await this.orderService.update(+id, updateOrderDto);
+  }
+
+  @Put('/status/:id')
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() updateOrderStatusDto: UpdateOrderAggregateStatusDto,
+  ) {
+    await this.orderService.update(+id, updateOrderStatusDto);
+    await this.orderProducerService.addOrderUpdateToQueue(
+      +id,
+      updateOrderStatusDto,
+    );
   }
 
   @Delete(':id')
